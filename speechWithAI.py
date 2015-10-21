@@ -173,6 +173,7 @@ class SpeechWithAI():
             #cv2.imshow('result', img1)
             #cv2.waitKey(200)
                 #git
+                #git2
             
             
 if __name__=='__main__':

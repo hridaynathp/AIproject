@@ -11,11 +11,11 @@ import cv2
 import time
 img1 = cv2.imread('apa_close_small.png')
 img2 = cv2.imread('apa_open_small.png')
-imgA = cv2.imread('apa_close_small.png')
-imgI = cv2.imread('apa_open_small.png')
-imgU = cv2.imread('apa_close_small.png')
-imgE = cv2.imread('apa_open_small.png')
-imgO = cv2.imread('apa_close_small.png')
+imgA = cv2.imread('apa_A.png')
+imgI = cv2.imread('apa_I.png')
+imgU = cv2.imread('apa_U.png')
+imgE = cv2.imread('apa_E.png')
+imgO = cv2.imread('apa_O.png')
 import threading
 apa_alarm = False
 c = True
@@ -89,34 +89,37 @@ class SpeechWithAI():
             if 'check in' in line:
                 sentence = "For the middle of the night, a receptionist is not now. I will call the person in charge of the reception desk, wait a minute." 
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence , shell=True)
-                config.c = False         
-            elif 'Hello' in line:
+                config.c = False 
+            elif 'good morning' in line:
+                sentence = "Good morning, how can I help you?"
+                subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
+                config.c = False        
+            elif 'hello' in line:
                 sentence = "Hello, how can I help you?"
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
                 config.c = False
-                config.apaspeak = 1
-            elif 'Have you got a room' in line:
+            elif 'good night' in line:
+                sentence = "Good night"
+                subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
+                config.c = False    
+            elif 'room' in line:
                 sentence = "Yes, we have some rooms available"
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
                 config.c = False
-                config.apaspeak = 1
             elif 'air-conditioning' in line:
                 sentence = "Yes,all the room have air-conditioning"
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
                 config.c = False
-                config.apaspeak = 1
-            elif 'I have a reservation in the name of Akshay' in line:
+            elif 'reservation' in line:
                 sentence = "Let me look on the system. Yes, Akshay a single room for 2 nights, bed and breakfast?"
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
-                config.c = False
-                config.apaspeak = 1	
-            elif 'breakfast?' in line:
-                sentence = "Morning at 9am "
+                config.c = False	
+            elif 'breakfast' in line:
+                sentence = "Morning at 9am"
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
                 config.c = False
-                config.apaspeak = 1
             else:
-                sentence = "Please say one more time" 
+                sentence = "please say one more time" 
                 subprocess.call('say -v' + config.speaker + ' -r' + config.speed + sentence, shell=True)
                 config.c = False
         sentenceList = list(sentence)
@@ -127,17 +130,18 @@ class SpeechWithAI():
         listlen = len(arg)
         i = 0
         while i < listlen:
-            if arg[i] != "a" or "i" or "u" or "e" or "o" or " ":
+            if "a" != arg[i] and "i" != arg[i] and "u" != arg[i] and "e" != arg[i] and "o" != arg[i] and " " != arg[i]:
                 del arg[i]
                 listlen -= 1
             else:
-                i += 1 
+                i += 1
+        return arg
         
     def apaImageEnglish(self, line):      
         global img1, img2, imgO, imgU, imgA, imgE, imgI, sentenceList
-        connectimg = {"o":1, "u":2, "a":3, "e":4, "i":5}
-        imglist = [imgO, imgU, imgA, imgE, imgI]
-        wordtime = 10
+        connectimg = {"o":0, "u":1, "a":2, "e":3, "i":4, " ":5}
+        imglist = [imgO, imgU, imgA, imgE, imgI, img1]
+        wordtime = 50
         config.c = True
         if config.apaEnglish:
             w = threading.Thread(target=self.apaSpeakEnglish, args = (line,))
@@ -146,7 +150,8 @@ class SpeechWithAI():
         w.start()
         while config.c:
             for i in sentenceList:
-                cv2.imshow('result', imglist(connectimg[i]))
+                print i
+                cv2.imshow('result', imglist[connectimg[i]])
                 cv2.waitKey(wordtime)
                 """
                 if voice_U:
@@ -172,13 +177,25 @@ class SpeechWithAI():
             #cv2.waitKey(200)
             #cv2.imshow('result', img1)
             #cv2.waitKey(200)
-                #git
-                #git2
             
             
 if __name__=='__main__':
+    #spe = SpeechWithAI()
+    #spe.apaImage('check in')
     spe = SpeechWithAI()
-    spe.apaImage('check in')
+    list = list("nfduisphaf jdas")
+    print list
+    print spe.makeAIUEO(list)
+    
+    #connectimg = {"o":1, "u":2, "a":3, "e":4, "i":5}
+    #imglist = [imgO, imgU, imgA, imgE, imgI]
+    #print connectimg["e"]
+    #print imglist[4]
+    #cv2.imshow('result', imglist[connectimg["e"]])
+    subprocess.call('say -v Ralph -r' + config.speed + "Please say one more time", shell=True)
+    
+    
+    
             
 
     
